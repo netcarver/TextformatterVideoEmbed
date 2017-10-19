@@ -161,19 +161,20 @@ class TextformatterVideoEmbed extends Textformatter implements ConfigurableModul
 	 *
 	 */
 	protected function makeResponsive($out, $aspectRatio = 0) {
+
 		$aspectRatio = floatval($aspectRatio);
-
 		if(!$aspectRatio) $aspectRatio = $this->defaultAspectRatio;
-
-		// Calculate padding percentage from aspect ratio
+		/* // Calculate padding percentage from aspect ratio */
 		$padding = (1 / $aspectRatio) * 100;
 		$padding = number_format($padding, 2, '.', '');
 
-		//$out = str_ireplace('<iframe ', "<iframe class='resp-video' style='position:absolute;top:0;left:0;width:100%;height:100%;' ", $out);
-		$out = str_ireplace('<iframe ', "<iframe class='resp-video' ", $out);
-		$out = "<div class='TextformatterVideoEmbed' style='position:relative;padding:0 0 $padding% 0;overflow:hidden;'>$out</div>";
+		$maxWidth  = empty($this->maxWidth)  ? 'auto' : $this->maxWidth  . 'px';
+		$maxHeight = empty($this->maxHeight) ? 'auto' : $this->maxHeight . 'px';
 
+		$out = str_ireplace('<iframe ', "<iframe style='position:absolute;top:0;left:0;width:100%;height:100%;' ", $out);
+		$out = "<div class='TextformatterVideoEmbedWrap' style='max-width: " . $maxWidth . "; max-height: " . $maxHeight . ";'><div class='TextformatterVideoEmbed' style='position:relative;padding:0 0 " . $padding . "% 0;height:0;overflow:hidden;'>$out</div></div>";
 		return $out;
+
 	}
 
 	/**
