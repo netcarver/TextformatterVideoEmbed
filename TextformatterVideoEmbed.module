@@ -48,6 +48,7 @@ class TextformatterVideoEmbed extends Textformatter implements ConfigurableModul
 		'responsive' => 1,
 		'defaultAspectRatio' => 16/9,
 		'dbSchemaVersion' => 1,
+		'iframeClasses' => '',
 		);
 
 	/**
@@ -171,7 +172,9 @@ class TextformatterVideoEmbed extends Textformatter implements ConfigurableModul
 		$maxWidth  = empty($this->maxWidth)  ? 'auto' : $this->maxWidth  . 'px';
 		$maxHeight = empty($this->maxHeight) ? 'auto' : $this->maxHeight . 'px';
 
-		$out = str_ireplace('<iframe ', "<iframe style='position:absolute;top:0;left:0;width:100%;height:100%;' ", $out);
+		$iframeClasses = $this->iframeClasses;
+
+		$out = str_ireplace('<iframe ', "<iframe class='$iframeClasses' style='position:absolute;top:0;left:0;width:100%;height:100%;' ", $out);
 		$out = "<div class='TextformatterVideoEmbedWrap' style='max-width: " . $maxWidth . "; max-height: " . $maxHeight . ";'><div class='TextformatterVideoEmbed' style='position:relative;padding:0 0 " . $padding . "% 0;height:0;overflow:hidden;'>$out</div></div>";
 		return $out;
 
@@ -277,12 +280,14 @@ class TextformatterVideoEmbed extends Textformatter implements ConfigurableModul
 		$f->attr('name', 'maxWidth');
 		$f->attr('value', $data['maxWidth']);
 		$f->label = __('Max Video Width');
+		$f->columnWidth = 50;
 		$inputfields->add($f);
 
 		$f = $this->wire('modules')->get('InputfieldInteger');
 		$f->attr('name', 'maxHeight');
 		$f->attr('value', $data['maxHeight']);
 		$f->label = __('Max Video Height');
+		$f->columnWidth = 50;
 		$inputfields->add($f);
 
 		$f = $this->wire('modules')->get('InputfieldCheckbox');
@@ -299,6 +304,15 @@ class TextformatterVideoEmbed extends Textformatter implements ConfigurableModul
 		$f->label = __('Default Aspect Ratio');
 		$f->description = __('This will be used as a fallback if the video\'s aspect ratio can\'t be properly determined from the oEmbed request.');
 		$f->notes = __('A sensible default is 1.78 (equals 16:9)');
+		$f->columnWidth = 50;
+		$inputfields->add($f);
+
+		$f = $this->wire('modules')->get('InputfieldText');
+		$f->attr('name', 'iframeClasses');
+		$f->attr('value', $data['iframeClasses']);
+		$f->label = __('Classes to add to containing iframe');
+		$f->notes = __('For example: **lazyload**');
+		$f->columnWidth = 50;
 		$inputfields->add($f);
 
 		if($this->wire('input')->post('clearCache')) {
